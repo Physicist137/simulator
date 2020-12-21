@@ -333,9 +333,9 @@ inline StaticVector<T, D> operator/(const T& value, const StaticVector<T, D>& ve
 
 template <typename T, unsigned D>
 std::ostream& operator<<(std::ostream& os, const math::linear::StaticVector<T, D>& vec) {
-	os << "(" << vec.x();
+	os << "[" << vec.x();
 	for (unsigned i = 1; i < D; ++i) os << ", " << vec[i];
-	os << ")";
+	os << "]";
 
 	return os;
 }

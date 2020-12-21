@@ -338,10 +338,10 @@ inline DynamicVector<T> operator/(const T& value, const DynamicVector<T>& vec) {
 
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const math::linear::DynamicVector<T>& vec) {
-	os << "(" << vec[0];
+	os << "[" << vec[0];
 	unsigned size = vec.size();
 	for (unsigned i = 1; i < size; ++i) os << ", " << vec[i];
-	os << ")";
+	os << "]";
 
 	return os;
 }
