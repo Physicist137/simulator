@@ -9,7 +9,7 @@ class LineSegment {
 	math::linear::StaticVector<T, 2> _start;
 	math::linear::StaticVector<T, 2> _end;
 
-public:
+protected:
 	class IntersectionData {
 		bool _intersects;
 		T _this;
@@ -26,8 +26,16 @@ public:
 		) : _intersects(true),  _this(this_position), _other(other_position), _position(position) {}
 
 		inline const bool intersects() const {return _intersects;}
+		inline const bool hits() const {return _intersects;}
+		inline const bool doesIntersect() const {return _intersects;}
+		inline const bool hasHit() const {return _intersects;}
+
 		inline const T& thisLine() const {return _this;}
 		inline const T& otherLine() const {return _other;}
+
+		inline const T& t() const {return _this;}
+		inline const T& s() const {return _other;}
+
 		inline const math::linear::StaticVector<T, 2>& position() const {return _position;}
 	};
 
