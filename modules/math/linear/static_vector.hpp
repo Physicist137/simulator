@@ -43,8 +43,8 @@ public:
 	StaticVector& operator*=(const T& value);
 	StaticVector& operator/=(const T& value);
 
-	bool operator==(const StaticVector& vec);
-	bool operator!=(const StaticVector& vec);
+	bool operator==(const StaticVector& vec) const;
+	bool operator!=(const StaticVector& vec) const;
 
 	StaticVector cross(const StaticVector& value) const;
 	StaticVector unit() const;
@@ -221,7 +221,7 @@ inline StaticVector<T, D>& StaticVector<T, D>::operator/=(const T& value) {
 }
 
 template <typename T, unsigned D>
-bool StaticVector<T, D>::operator==(const StaticVector<T, D>& vec) {
+bool StaticVector<T, D>::operator==(const StaticVector<T, D>& vec) const {
 	for (unsigned i = 0; i < D; ++i) {
 		if (_data[i] != vec[i]) return false;
 	}
@@ -230,7 +230,7 @@ bool StaticVector<T, D>::operator==(const StaticVector<T, D>& vec) {
 }
 
 template <typename T, unsigned D>
-bool StaticVector<T, D>::operator!=(const StaticVector<T, D>& vec) {
+bool StaticVector<T, D>::operator!=(const StaticVector<T, D>& vec) const {
 	return !(*this == vec);
 }
 
