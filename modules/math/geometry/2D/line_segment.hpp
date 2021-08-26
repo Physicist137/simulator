@@ -10,34 +10,7 @@ class LineSegment {
 	math::linear::StaticVector<T, 2> _end;
 
 protected:
-	class IntersectionData {
-		bool _intersects;
-		T _this;
-		T _other;
-		math::linear::StaticVector<T, 2> _position;
-
-	public:
-		explicit IntersectionData() : _intersects(false), _this(), _other(), _position() {}
-
-		IntersectionData(
-			const T& this_position,
-			const T& other_position,
-			const math::linear::StaticVector<T, 2>& position
-		) : _intersects(true),  _this(this_position), _other(other_position), _position(position) {}
-
-		inline const bool intersects() const {return _intersects;}
-		inline const bool hits() const {return _intersects;}
-		inline const bool doesIntersect() const {return _intersects;}
-		inline const bool hasHit() const {return _intersects;}
-
-		inline const T& thisLine() const {return _this;}
-		inline const T& otherLine() const {return _other;}
-
-		inline const T& t() const {return _this;}
-		inline const T& s() const {return _other;}
-
-		inline const math::linear::StaticVector<T, 2>& position() const {return _position;}
-	};
+	class IntersectionData;
 
 public:
 	explicit LineSegment(const math::linear::StaticVector<T, 2>& start, const math::linear::StaticVector<T, 2>& end) : _start(start), _end(end) {}
@@ -50,6 +23,38 @@ public:
 	T length_squared() const;
 
 	IntersectionData intersect(const LineSegment& other) const;
+};
+
+
+// https://stackoverflow.com/a/8006857/15049194
+template <typename T>
+class LineSegment<T>::IntersectionData {
+	bool _intersects;
+	T _this;
+	T _other;
+	math::linear::StaticVector<T, 2> _position;
+
+public:
+	explicit IntersectionData() : _intersects(false), _this(), _other(), _position() {}
+
+	IntersectionData(
+		const T& this_position,
+		const T& other_position,
+		const math::linear::StaticVector<T, 2>& position
+	) : _intersects(true),  _this(this_position), _other(other_position), _position(position) {}
+
+	inline const bool intersects() const {return _intersects;}
+	inline const bool hits() const {return _intersects;}
+	inline const bool doesIntersect() const {return _intersects;}
+	inline const bool hasHit() const {return _intersects;}
+
+	inline const T& thisLine() const {return _this;}
+	inline const T& otherLine() const {return _other;}
+
+	inline const T& t() const {return _this;}
+	inline const T& s() const {return _other;}
+
+	inline const math::linear::StaticVector<T, 2>& position() const {return _position;}
 };
 
 template <typename T>
