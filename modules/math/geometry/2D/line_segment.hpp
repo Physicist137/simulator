@@ -43,7 +43,11 @@ public:
 	explicit LineSegment(const math::linear::StaticVector<T, 2>& start, const math::linear::StaticVector<T, 2>& end) : _start(start), _end(end) {}
 	explicit LineSegment(const math::linear::StaticVector<T, 2>& end) : _start(), _end(end) {}
 
+	inline const math::linear::StaticVector<T, 2>& start() const {return _start;}
+	inline const math::linear::StaticVector<T, 2>& end() const {return _end;}
+	
 	math::linear::StaticVector<T, 2> displacement() const;
+	T length_squared() const;
 
 	IntersectionData intersect(const LineSegment& other) const;
 };
@@ -51,6 +55,11 @@ public:
 template <typename T>
 inline math::linear::StaticVector<T, 2> LineSegment<T>::displacement() const {
 	return _end - _start;
+}
+
+template <typename T>
+inline T LineSegment<T>::length_squared() const {
+	return this->displacement().dot();
 }
 
 template <typename T>
