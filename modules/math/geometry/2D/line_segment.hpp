@@ -66,42 +66,5 @@ typename math::geometry::IntersectionData<T,2> LineSegment<T>::intersect(const L
 	return inter;
 }
 
-
-/*
-template <typename T>
-typename math::geometry::IntersectionData<T,2> LineSegment<T>::intersect(const LineSegment& other) const {
-	// Get differences.
-	math::linear::StaticVector<T, 2> diff_this = _end - _start;
-	math::linear::StaticVector<T, 2> diff_other = other._end - other._start;
-	math::linear::StaticVector<T, 2> diff_cross = other._start - _start;
-
-	// Get matrix elements.
-	T a11 = diff_this.x();
-	T a12 = diff_other.x();
-	T a21 = diff_this.y();
-	T a22 = diff_other.y();
-	T b1 = diff_cross.x();
-	T b2 = diff_cross.y();
-
-	// Compute determinant and rule out parallel lines.
-	T det = a11 * a22  - a12 * a21;
-	if (det == 0.0) return math::geometry::IntersectionData<T,2>();
-
-	// Compute solution.
-	T t = (a22*b1 - a12*b2) / det;
-	T s = (a21*b1 - a11*b2) / det;
-
-	// Rule out no intersection scenarios.
-	if (t < 0) return math::geometry::IntersectionData<T,2>();
-	if (s < 0) return math::geometry::IntersectionData<T,2>();
-	if (t > 1) return math::geometry::IntersectionData<T,2>();
-	if (s > 1) return math::geometry::IntersectionData<T,2>();
-
-	// Return intersection.
-	math::linear::StaticVector<T, 2> pos = _start + diff_this * t;
-	return math::geometry::IntersectionData<T,2>(t, s, pos);
-}*/
-
-
 } // namespace geometry2
 } // namespace math
