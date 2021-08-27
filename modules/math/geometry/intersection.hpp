@@ -58,11 +58,11 @@ public:
 	inline const SingleIntersectionData<T,D>& operator[](unsigned i) const {return _data[i];}
 	
 	// Compatibility with SingleIntersectionData public memberfunctions. Get the first.
-	inline const T& thisParameter() const {return _data[0].thisParameter();}
-	inline const T& otherParameter() const {return _data[0].otherParameter();}
-	inline const T& t() const {return thisParameter();}
-	inline const T& s() const {return otherParameter();}
-	inline const math::linear::StaticVector<T, D>& position() const {return _data[0].position();}
+	const T& thisParameter() const;
+	const T& otherParameter() const;
+	const T& t() const;
+	const T& s() const;
+	const math::linear::StaticVector<T, D>& position() const;
 	
 	// Add an intersection.
 	const IntersectionData& addIntersection(const SingleIntersectionData<T,D>& data);
@@ -71,6 +71,34 @@ public:
 	// Clear.
 	const IntersectionData& clear();
 };
+
+template <typename T, unsigned D>
+const T& IntersectionData<T,D>::thisParameter() const {
+	if (_data.empty()) throw std::invalid_argument("Can't use this member function if there are no collisions.");
+	return _data[0].thisParameter();
+}
+
+template <typename T, unsigned D>
+const T& IntersectionData<T,D>::otherParameter() const {
+	if (_data.empty()) throw std::invalid_argument("Can't use this member function if there are no collisions.");
+	return _data[0].otherParameter();
+}
+
+template <typename T, unsigned D>
+const T& IntersectionData<T,D>::t() const {
+	return thisParameter();
+}
+
+template <typename T, unsigned D>
+const T& IntersectionData<T,D>::s() const {
+	return otherParameter();
+}
+
+template <typename T, unsigned D>
+const math::linear::StaticVector<T, D>& IntersectionData<T,D>::position() const {
+	if (_data.empty()) throw std::invalid_argument("Can't use this member function if there are no collisions.");
+	return _data[0].position();
+}
 
 
 template <typename T, unsigned D>
