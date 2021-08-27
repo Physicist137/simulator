@@ -92,7 +92,6 @@ void PolygonalChain<T>::load_self_intersection_data() {
 	unsigned size = _vertices.size();
 	for (unsigned i = 1; i < size; ++i) {
 		for (unsigned j = i+2; j < size; ++j) {
-			std::cout << i-1 << "," << j-1 << std::endl;
 			math::geometry2::LineSegment<T> first(_vertices[i-1], _vertices[i]);
 			math::geometry2::LineSegment<T> second(_vertices[j-1], _vertices[j]);
 			math::geometry::IntersectionData<T,2> inter = first.intersect(second);
