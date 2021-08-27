@@ -79,10 +79,10 @@ TEST(LineSegment, CrossIntersection) {
 	EXPECT_EQ(inter2.position().y(), 0.5);
 	
 	// Intersection t-parameters.
-	EXPECT_EQ(inter1.thisLine(), 0.5);
-	EXPECT_EQ(inter1.otherLine(), 0.5);
-	EXPECT_EQ(inter2.thisLine(), 0.5);
-	EXPECT_EQ(inter2.otherLine(), 0.5);
+	EXPECT_EQ(inter1.thisParameter(), 0.5);
+	EXPECT_EQ(inter1.otherParameter(), 0.5);
+	EXPECT_EQ(inter2.thisParameter(), 0.5);
+	EXPECT_EQ(inter2.otherParameter(), 0.5);
 }
 
 
