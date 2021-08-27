@@ -32,7 +32,8 @@ public:
 	// Polygon information
 	inline unsigned faces() const {return _vertices.size();}
 	T perimeter(const std::function<T(T)>& sqrt = [](auto const& x) {return std::sqrt(x);}) const;
-	T area(const std::function<T(T)>& sqrt = [](auto const& x) {return std::sqrt(x);}) const;
+	T signedArea() const;
+	T area() const;
 	
 	// Add vertices.
 	const SimplePolygon& addVertex(const math::linear::StaticVector<T, 2>& vertex);
@@ -74,7 +75,7 @@ T SimplePolygon<T>::perimeter(const std::function<T(T)>& sqrt) const {
 }
 
 template <typename T>
-T SimplePolygon<T>::area(const std::function<T(T)>& sqrt) const {
+T SimplePolygon<T>::signedArea() const {
 	unsigned size = _vertices.size();
 	T result = T();
 	
@@ -85,6 +86,13 @@ T SimplePolygon<T>::area(const std::function<T(T)>& sqrt) const {
 	}
 	
 	return result / 2.0;
+}
+
+template <typename T>
+T SimplePolygon<T>::area() const {
+	T signed_area = signedArea();
+	if (signed_area >= 0) return signed_area;
+	else return -signed_area;
 }
 
 
