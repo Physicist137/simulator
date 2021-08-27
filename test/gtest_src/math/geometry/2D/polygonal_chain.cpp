@@ -24,3 +24,15 @@ TEST(PolygonalChain2D, ConstructorAndBasicFunctions) {
 	EXPECT_EQ(chain2.vertex(1).y(), 0.0);
 	EXPECT_EQ(chain2.length(), 2.0);
 }
+
+TEST(PolygonalChain2D, SelfIntersection) {
+	math::linear::StaticVector<float, 2> zero({0.0, 0.0});
+	math::linear::StaticVector<float, 2> i({1.0, 0.0});
+	math::linear::StaticVector<float, 2> j({0.0, 1.0});
+	std::vector<math::linear::StaticVector<float, 2>> vec({zero, i+j, 2.f*i, 3.f*i+j, 4.f*i, 5.f*i+j});
+	math::geometry2::PolygonalChain<float> chain(vec);
+	
+	chain.calculateSelfIntersectionData();
+	auto data = chain.selfIntersectionData();
+	EXPECT_EQ(data.hasHit(), false);
+}

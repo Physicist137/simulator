@@ -4,6 +4,8 @@
 #include <cmath>
 #include <initializer_list>
 #include <math/linear/static_vector.hpp>
+#include <math/geometry/intersection.hpp>
+#include <math/geometry/2D/line_segment.hpp>
 
 namespace math {
 namespace geometry2 {
@@ -11,6 +13,11 @@ namespace geometry2 {
 template <typename T>
 class PolygonalChain {
 	std::vector<math::linear::StaticVector<T, 2>> _vertices;
+	math::geometry::IntersectionData<T,2> _self_intersection_data;
+
+protected:
+	void clear_self_intersection_data();
+	void load_self_intersection_data();
 
 public:
 	// Constructor.
@@ -29,6 +36,11 @@ public:
 	// Displacement and length.
 	math::linear::StaticVector<T, 2> displacement() const;
 	T length(const std::function<T(T)>& sqrt = [](auto const& x) {return std::sqrt(x);}) const;
+	
+	// Self intersection data.
+	inline const math::geometry::IntersectionData<T,2>& selfIntersectionData() const {return _self_intersection_data;}
+	const PolygonalChain& calculateSelfIntersectionData();
+	const PolygonalChain& clearSelfIntersectionData();
 };
 
 
@@ -71,6 +83,40 @@ T PolygonalChain<T>::length(const std::function<T(T)>& sqrt) const {
 	}
 	
 	return result;
+}
+
+
+// Self Intersection
+template <typename T>
+void PolygonalChain<T>::load_self_intersection_data() {
+	unsigned size = _vertices.size();
+	for (unsigned i = 1; i < size; ++i) {
+		for (unsigned j = i+2; j < size; ++j) {
+			std::cout << i-1 << "," << j-1 << std::endl;
+			math::geometry2::LineSegment<T> first(_vertices[i-1], _vertices[i]);
+			math::geometry2::LineSegment<T> second(_vertices[j-1], _vertices[j]);
+			math::geometry::IntersectionData<T,2> inter = first.intersect(second);
+			if (inter.hasHit()) _self_intersection_data.addIntersection(inter);
+		}
+	}
+}
+
+template <typename T>
+void PolygonalChain<T>::clear_self_intersection_data() {
+	_self_intersection_data.clear();
+}
+
+template <typename T>
+const PolygonalChain<T>& PolygonalChain<T>::calculateSelfIntersectionData() {
+	this->clear_self_intersection_data();
+	this->load_self_intersection_data();
+	return *this;
+}
+
+template <typename T>
+const PolygonalChain<T>& PolygonalChain<T>::clearSelfIntersectionData() {
+	this->clear_self_intersection_data();
+	return *this;
 }
 
 }	// geometry2 namespace.
