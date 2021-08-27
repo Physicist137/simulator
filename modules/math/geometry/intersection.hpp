@@ -65,13 +65,30 @@ public:
 	inline const math::linear::StaticVector<T, D>& position() const {return _data[0].position();}
 	
 	// Add an intersection.
-	void addIntersection(const SingleIntersectionData<T,D>& data);
+	const IntersectionData& addIntersection(const SingleIntersectionData<T,D>& data);
+	const IntersectionData& addIntersection(const IntersectionData<T,D>& data);
+	
+	// Clear.
+	const IntersectionData& clear();
 };
 
 
 template <typename T, unsigned D>
-void IntersectionData<T,D>::addIntersection(const SingleIntersectionData<T,D>& data) {
+const IntersectionData<T,D>& IntersectionData<T,D>::addIntersection(const SingleIntersectionData<T,D>& data) {
 	_data.push_back(data);
+	return *this;
+}
+
+template <typename T, unsigned D>
+const IntersectionData<T,D>& IntersectionData<T,D>::addIntersection(const IntersectionData<T,D>& data) {
+	for (const SingleIntersectionData<T,D>& single : data._data) _data.push_back(single);
+	return *this;
+}
+
+template <typename T, unsigned D>
+const IntersectionData<T,D>& IntersectionData<T,D>::clear() {
+	_data.clear();
+	return *this;
 }
 
 }	// geometry namespace
