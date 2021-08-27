@@ -21,26 +21,35 @@ TEST(LineSegment2D, ConstructorAndBasicFunctions) {
 	EXPECT_EQ(iseg.end(), i);
 	EXPECT_EQ(iseg.displacement(), i);
 	EXPECT_EQ(iseg.length_squared(), 1.0);
+	EXPECT_EQ(iseg.length(), 1.0);
 	
 	EXPECT_EQ(jseg.start(), zero);
 	EXPECT_EQ(jseg.end(), j);
 	EXPECT_EQ(jseg.displacement(), j);
 	EXPECT_EQ(jseg.length_squared(), 1.0);
+	EXPECT_EQ(jseg.length(), 1.0);
 	
 	EXPECT_EQ(vseg.start(), i);
 	EXPECT_EQ(vseg.end(), one);
 	EXPECT_EQ(vseg.displacement(), j);
 	EXPECT_EQ(vseg.length_squared(), 1.0);
+	EXPECT_EQ(vseg.length(), 1.0);
 	
 	EXPECT_EQ(hseg.start(), j);
 	EXPECT_EQ(hseg.end(), one);
 	EXPECT_EQ(hseg.displacement(), i);
 	EXPECT_EQ(hseg.length_squared(), 1.0);
+	EXPECT_EQ(hseg.length(), 1.0);
 	
 	EXPECT_EQ(diag.start(), zero);
 	EXPECT_EQ(diag.end(), one);
 	EXPECT_EQ(diag.displacement(), i+j);
 	EXPECT_EQ(diag.length_squared(), 2.0);
+	
+	float ls = diag.length() * diag.length();
+	float expected = 2.0;
+	float err = 1e-6;
+	EXPECT_TRUE((ls >= expected - err)  and  (ls <= expected + err));
 }
 
 

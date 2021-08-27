@@ -1,4 +1,6 @@
 #pragma once
+#include <cmath>
+#include <functional>
 #include <math/linear/static_vector.hpp>
 
 namespace math {
@@ -21,6 +23,7 @@ public:
 	
 	math::linear::StaticVector<T, 2> displacement() const;
 	T length_squared() const;
+	T length(const std::function<T(T)>& sqrt = [](auto const& x) {return std::sqrt(x);}) const;
 
 	IntersectionData intersect(const LineSegment& other) const;
 };
@@ -66,6 +69,12 @@ template <typename T>
 inline T LineSegment<T>::length_squared() const {
 	return this->displacement().dot();
 }
+
+template <typename T>
+inline T LineSegment<T>::length(const std::function<T(T)>& sqrt) const {
+	return sqrt(this->length_squared());
+}
+
 
 template <typename T>
 typename LineSegment<T>::IntersectionData LineSegment<T>::intersect(const LineSegment& other) const {
