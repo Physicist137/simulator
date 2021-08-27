@@ -2,10 +2,14 @@
 #include <cmath>
 #include <functional>
 #include <math/geometry/intersection.hpp>
+#include <math/geometry/2D/ray.hpp>
 #include <math/linear/static_vector.hpp>
 
 namespace math {
 namespace geometry2 {
+
+template <typename T>
+class Ray;
 
 template <typename T>
 class LineSegment {
@@ -45,6 +49,27 @@ inline T LineSegment<T>::length(const std::function<T(T)>& sqrt) const {
 
 template <typename T>
 typename math::geometry::IntersectionData<T,2> LineSegment<T>::intersect(const LineSegment& other) const {
+	// Build rays from the line segments.
+	Ray<T> ray_this(_start, _end - _start);
+	Ray<T> ray_other(other.start(), other.end() - other.start());
+	
+	// Intersect the rays.
+	auto inter = ray_this.intersect(ray_other);
+	
+	if (inter.hasHit()) {
+		T t = inter.thisParameter();
+		T s = inter.otherParameter();
+		if (t > 1) return math::geometry::IntersectionData<T,2>();
+		if (s > 1) return math::geometry::IntersectionData<T,2>();
+	}
+
+	return inter;
+}
+
+
+/*
+template <typename T>
+typename math::geometry::IntersectionData<T,2> LineSegment<T>::intersect(const LineSegment& other) const {
 	// Get differences.
 	math::linear::StaticVector<T, 2> diff_this = _end - _start;
 	math::linear::StaticVector<T, 2> diff_other = other._end - other._start;
@@ -75,7 +100,7 @@ typename math::geometry::IntersectionData<T,2> LineSegment<T>::intersect(const L
 	// Return intersection.
 	math::linear::StaticVector<T, 2> pos = _start + diff_this * t;
 	return math::geometry::IntersectionData<T,2>(t, s, pos);
-}
+}*/
 
 
 } // namespace geometry2
