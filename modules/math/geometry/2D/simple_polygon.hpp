@@ -30,7 +30,7 @@ public:
 	inline const math::linear::StaticVector<T, 2>& operator[](unsigned i) const {return _vertices[i % _vertices.size()];}
 	
 	// Polygon information
-	inline unsigned faces() const {return _vertices.size();}
+	inline unsigned numberOfEdges() const {return _vertices.size();}
 	T perimeter(const std::function<T(T)>& sqrt = [](auto const& x) {return std::sqrt(x);}) const;
 	T signedArea() const;
 	T area() const;

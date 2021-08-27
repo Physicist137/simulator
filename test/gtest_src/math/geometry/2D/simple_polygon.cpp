@@ -29,10 +29,15 @@ TEST(SimplePolygon2D, ConstructorAndBasicFunctions) {
 	trapezoid.addVertex(i+j);
 	trapezoid.addVertex(2.0f * i);
 
+	EXPECT_EQ(square.numberOfEdges(), 4);
 	EXPECT_FLOAT_EQ(square.perimeter(), 4.0);
 	EXPECT_FLOAT_EQ(square.area(), 1.0);
+	
+	EXPECT_EQ(triangle.numberOfEdges(), 3);
 	EXPECT_FLOAT_EQ(triangle.perimeter(), 2.0 + std::sqrt(2.0));
 	EXPECT_FLOAT_EQ(triangle.area(), 0.5);
+	
+	EXPECT_EQ(trapezoid.numberOfEdges(), 4);
 	EXPECT_FLOAT_EQ(trapezoid.perimeter(), 4.0 + std::sqrt(2.0));
 	EXPECT_FLOAT_EQ(trapezoid.area(), 3.0 / 2.0);
 }
