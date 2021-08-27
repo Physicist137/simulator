@@ -74,10 +74,10 @@ TEST(LineSegment3D, CrossIntersection) {
 	EXPECT_EQ(space_inter.position().y(), 0.5);
 	
 	// Intersection t-parameters.
-	EXPECT_EQ(plane_inter.thisLine(), 0.5);
-	EXPECT_EQ(plane_inter.otherLine(), 0.5);
-	EXPECT_EQ(space_inter.thisLine(), 0.5);
-	EXPECT_EQ(space_inter.otherLine(), 0.5);
+	EXPECT_EQ(plane_inter.thisParameter(), 0.5);
+	EXPECT_EQ(plane_inter.otherParameter(), 0.5);
+	EXPECT_EQ(space_inter.thisParameter(), 0.5);
+	EXPECT_EQ(space_inter.otherParameter(), 0.5);
 }
 
 
