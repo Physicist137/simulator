@@ -16,13 +16,13 @@ TEST(PolygonalChain2D, ConstructorAndBasicFunctions) {
 	//math::geometry2::PolygonalChain<float> chain3({zero, i, i+j});
 	//math::geometry2::PolygonalChain<float> chain3({{0.0, 0.0}, {1.0, 0.0}, {1.0, 1.0}});
 	
-	EXPECT_EQ(chain2.start().x(), 0.0);
-	EXPECT_EQ(chain2.start().y(), 0.0);
-	EXPECT_EQ(chain2.end().x(), 1.0);
-	EXPECT_EQ(chain2.end().y(), 1.0);
-	EXPECT_EQ(chain2.vertex(1).x(), 1.0);
-	EXPECT_EQ(chain2.vertex(1).y(), 0.0);
-	EXPECT_EQ(chain2.length(), 2.0);
+	EXPECT_FLOAT_EQ(chain2.start().x(), 0.0);
+	EXPECT_FLOAT_EQ(chain2.start().y(), 0.0);
+	EXPECT_FLOAT_EQ(chain2.end().x(), 1.0);
+	EXPECT_FLOAT_EQ(chain2.end().y(), 1.0);
+	EXPECT_FLOAT_EQ(chain2.vertex(1).x(), 1.0);
+	EXPECT_FLOAT_EQ(chain2.vertex(1).y(), 0.0);
+	EXPECT_FLOAT_EQ(chain2.length(), 2.0);
 }
 
 TEST(PolygonalChain2D, SelfIntersection) {
@@ -34,5 +34,5 @@ TEST(PolygonalChain2D, SelfIntersection) {
 	
 	chain.calculateSelfIntersectionData();
 	auto data = chain.selfIntersectionData();
-	EXPECT_EQ(data.hasHit(), false);
+	EXPECT_FALSE(data.hasHit());
 }

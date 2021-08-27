@@ -21,27 +21,27 @@ TEST(LineSegment3D, ConstructorAndBasicFunctions) {
 	EXPECT_EQ(iseg.start(), zero);
 	EXPECT_EQ(iseg.end(), i);
 	EXPECT_EQ(iseg.displacement(), i);
-	EXPECT_EQ(iseg.length_squared(), 1.0);
+	EXPECT_FLOAT_EQ(iseg.length_squared(), 1.0);
 	
 	EXPECT_EQ(jseg.start(), zero);
 	EXPECT_EQ(jseg.end(), j);
 	EXPECT_EQ(jseg.displacement(), j);
-	EXPECT_EQ(jseg.length_squared(), 1.0);
+	EXPECT_FLOAT_EQ(jseg.length_squared(), 1.0);
 	
 	EXPECT_EQ(vseg.start(), i);
 	EXPECT_EQ(vseg.end(), one);
 	EXPECT_EQ(vseg.displacement(), j);
-	EXPECT_EQ(vseg.length_squared(), 1.0);
+	EXPECT_FLOAT_EQ(vseg.length_squared(), 1.0);
 	
 	EXPECT_EQ(hseg.start(), j);
 	EXPECT_EQ(hseg.end(), one);
 	EXPECT_EQ(hseg.displacement(), i);
-	EXPECT_EQ(hseg.length_squared(), 1.0);
+	EXPECT_FLOAT_EQ(hseg.length_squared(), 1.0);
 	
 	EXPECT_EQ(diag.start(), zero);
 	EXPECT_EQ(diag.end(), one);
 	EXPECT_EQ(diag.displacement(), i+j);
-	EXPECT_EQ(diag.length_squared(), 2.0);
+	EXPECT_FLOAT_EQ(diag.length_squared(), 2.0);
 }
 
 
@@ -64,20 +64,20 @@ TEST(LineSegment3D, CrossIntersection) {
 	auto space_inter = uu.intersect(dd);
 	
 	// Were there intersection?
-	EXPECT_EQ(plane_inter.hasHit(), true);
-	EXPECT_EQ(space_inter.hasHit(), true);
+	EXPECT_TRUE(plane_inter.hasHit());
+	EXPECT_TRUE(space_inter.hasHit());
 	
 	// Intersection position.
-	EXPECT_EQ(plane_inter.position().x(), 0.5);
-	EXPECT_EQ(plane_inter.position().y(), 0.5);
-	EXPECT_EQ(space_inter.position().x(), 0.5);
-	EXPECT_EQ(space_inter.position().y(), 0.5);
+	EXPECT_FLOAT_EQ(plane_inter.position().x(), 0.5);
+	EXPECT_FLOAT_EQ(plane_inter.position().y(), 0.5);
+	EXPECT_FLOAT_EQ(space_inter.position().x(), 0.5);
+	EXPECT_FLOAT_EQ(space_inter.position().y(), 0.5);
 	
 	// Intersection t-parameters.
-	EXPECT_EQ(plane_inter.thisParameter(), 0.5);
-	EXPECT_EQ(plane_inter.otherParameter(), 0.5);
-	EXPECT_EQ(space_inter.thisParameter(), 0.5);
-	EXPECT_EQ(space_inter.otherParameter(), 0.5);
+	EXPECT_FLOAT_EQ(plane_inter.thisParameter(), 0.5);
+	EXPECT_FLOAT_EQ(plane_inter.otherParameter(), 0.5);
+	EXPECT_FLOAT_EQ(space_inter.thisParameter(), 0.5);
+	EXPECT_FLOAT_EQ(space_inter.otherParameter(), 0.5);
 }
 
 
@@ -99,6 +99,6 @@ TEST(LineSegment3D, ParallelIntersection) {
 	auto space_inter = horizontal.intersect(vertical);
 	
 	// Were there intersection?
-	EXPECT_EQ(plane_inter.hasHit(), false);
-	EXPECT_EQ(space_inter.hasHit(), false);
+	EXPECT_FALSE(plane_inter.hasHit());
+	EXPECT_FALSE(space_inter.hasHit());
 }
