@@ -5,8 +5,9 @@
 #include <initializer_list>
 #include <math/linear/static_vector.hpp>
 #include <math/geometry/intersection.hpp>
-#include <math/geometry/2D/ray.hpp>
+#include <math/geometry/2D/ray_base.hpp>
 #include <math/geometry/2D/line_segment.hpp>
+#include <math/geometry/2D/ray.hpp>
 
 namespace math {
 namespace geometry2 {
@@ -46,8 +47,7 @@ public:
 	T area() const;
 	
 	// Intersection operations.
-	math::geometry::IntersectionData<T,2> intersect(const math::geometry2::Ray<T>& ray) const;
-	math::geometry::IntersectionData<T,2> intersect(const math::geometry2::LineSegment<T>& line) const;
+	math::geometry::IntersectionData<T,2> intersect(const math::geometry2::RayBase<T>& ray) const;
 	bool isInside(const math::linear::StaticVector<T, 2>& point) const;
 	
 	// Add vertices.
@@ -124,24 +124,11 @@ T SimplePolygon<T>::area() const {
 }
 
 template <typename T>
-math::geometry::IntersectionData<T,2> SimplePolygon<T>::intersect(const math::geometry2::Ray<T>& ray) const {
+math::geometry::IntersectionData<T,2> SimplePolygon<T>::intersect(const math::geometry2::RayBase<T>& ray) const {
 	unsigned size = _vertices.size();
 	math::geometry::IntersectionData<T,2> data;
 	for (unsigned i = 0; i < size; ++i) {
 		auto inter = ray.intersect(edge(i));
-		inter.swap();
-		if (inter.hasHit()) data.addIntersection(inter);
-	}
-	
-	return data;
-}
-
-template <typename T>
-math::geometry::IntersectionData<T,2> SimplePolygon<T>::intersect(const math::geometry2::LineSegment<T>& line) const {
-	unsigned size = _vertices.size();
-	math::geometry::IntersectionData<T,2> data;
-	for (unsigned i = 0; i < size; ++i) {
-		auto inter = line.intersect(edge(i));
 		inter.swap();
 		if (inter.hasHit()) data.addIntersection(inter);
 	}
