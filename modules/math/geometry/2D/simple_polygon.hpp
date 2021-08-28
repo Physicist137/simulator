@@ -17,6 +17,10 @@ template <typename T>
 class SimplePolygon {
 	std::vector<math::linear::StaticVector<T, 2>> _vertices;
 
+
+protected:
+	void cleanDegenerateVertexIntersection(math::geometry::IntersectionData<T,2>& data) const;
+
 public:
 	// Constructor.
 	SimplePolygon();
@@ -124,9 +128,40 @@ T SimplePolygon<T>::area() const {
 }
 
 template <typename T>
+void SimplePolygon<T>::cleanDegenerateVertexIntersection(math::geometry::IntersectionData<T,2>& data) const {
+	
+	
+	// Verify adjacent intersections, and check if it happens at the same location.
+	std::vector<unsigned> to_erase;
+	unsigned size = data.numberOfHits();
+	for (unsigned i = 1; i < size; ++i) {
+		if (data[i].location().vertex() - data[i-1].location().vertex() == 1) {
+			if (data[i].thisParameter() < 1e-6) to_erase.push_back(i-1);
+			else to_erase.push_back(i);
+		}
+	}
+	
+	// Verify first and last hits.
+	if (size > 1) {
+		if (data[0].location().vertex() - data[size-1].location().vertex() == 1) {
+			if (data[0].thisParameter() < 1e-6) to_erase.push_back(size-1);
+			else to_erase.push_back(0);
+		}
+	}
+	
+	// Sort, reverse, and delete entries.
+	if (not to_erase.empty()) {
+		std::sort(to_erase.begin(), to_erase.end(), std::greater<unsigned>());
+		for (unsigned index : to_erase) data.deleteByIndex(index);
+	}
+}
+
+template <typename T>
 math::geometry::IntersectionData<T,2> SimplePolygon<T>::intersect(const math::geometry2::RayBase<T>& ray) const {
 	unsigned size = _vertices.size();
 	math::geometry::IntersectionData<T,2> data;
+	
+	// Calculate intersections.
 	for (unsigned i = 0; i < size; ++i) {
 		math::geometry::IntersectionLocation location(i);
 		auto inter = ray.intersect(edge(i), location);
@@ -134,6 +169,10 @@ math::geometry::IntersectionData<T,2> SimplePolygon<T>::intersect(const math::ge
 		if (inter.hasHit()) data.addIntersection(inter);
 	}
 	
+	// Degenerate vertex intersection.
+	this->cleanDegenerateVertexIntersection(data);
+
+	// Return data.
 	return data;
 }
 

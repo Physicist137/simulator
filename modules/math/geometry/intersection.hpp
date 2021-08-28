@@ -101,6 +101,7 @@ public:
 	// Add an intersection.
 	const IntersectionData& addIntersection(const SingleIntersectionData<T,D>& data);
 	const IntersectionData& addIntersection(const IntersectionData<T,D>& data);
+	const IntersectionData& deleteByIndex(unsigned index);
 	
 	// Clear.
 	const IntersectionData& clear();
@@ -165,6 +166,12 @@ const IntersectionData<T,D>& IntersectionData<T,D>::clear() {
 template <typename T, unsigned D>
 const IntersectionData<T,D>& IntersectionData<T,D>::swap() {
 	for (SingleIntersectionData<T,D>& single : _data) single.swap();
+	return *this;
+}
+
+template <typename T, unsigned D>
+const IntersectionData<T,D>& IntersectionData<T,D>::deleteByIndex(unsigned index) {
+	_data.erase(_data.begin() + index);
 	return *this;
 }
 

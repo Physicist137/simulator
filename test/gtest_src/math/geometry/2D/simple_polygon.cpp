@@ -94,3 +94,27 @@ TEST(SimplePolygon2D, IntersectionOperations) {
 	EXPECT_TRUE(square.isInside(0.5f * one - 0.2f * j));
 	EXPECT_TRUE(square.isInside(0.5f * one));
 }
+
+
+TEST(SimplePolygon2D, DegenerateIntersectionCases) {
+	// Define few vectors.
+	math::linear::StaticVector<float, 2> zero({0.0, 0.0});
+	math::linear::StaticVector<float, 2> i({1.0, 0.0});
+	math::linear::StaticVector<float, 2> j({0.0, 1.0});
+	math::linear::StaticVector<float, 2> one = i + j;
+	
+	// Define a square..
+	math::geometry2::SimplePolygon<float> square;
+	square.addVertex(zero);
+	square.addVertex(i);
+	square.addVertex(i+j);
+	square.addVertex(j);
+	
+	// Define a ray that passes through 3rd vertex.
+	math::geometry2::Ray<float> ray(0.5f * one, 1.5f * one);
+	
+	// Intersect.
+	auto inter = square.intersect(ray);
+	EXPECT_TRUE(inter.hasHit());
+	EXPECT_EQ(inter.numberOfHits(), 1);
+}
