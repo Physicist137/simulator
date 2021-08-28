@@ -11,38 +11,77 @@ TEST(SimplePolygon2D, ConstructorAndBasicFunctions) {
 	math::linear::StaticVector<float, 2> j({0.0, 1.0});
 	math::linear::StaticVector<float, 2> one = i + j;
 	
-	// Define few segments.
+	// Square test.
 	math::geometry2::SimplePolygon<float> square;
 	square.addVertex(zero);
 	square.addVertex(i);
 	square.addVertex(i+j);
 	square.addVertex(j);
-	
-	math::geometry2::SimplePolygon<float> triangle;
-	triangle.addVertex(zero);
-	triangle.addVertex(j);
-	triangle.addVertex(i);
-	
-	math::geometry2::SimplePolygon<float> trapezoid;
-	trapezoid.addVertex(zero);
-	trapezoid.addVertex(j);
-	trapezoid.addVertex(i+j);
-	trapezoid.addVertex(2.0f * i);
-
 	EXPECT_EQ(square.numberOfEdges(), 4);
 	EXPECT_EQ(square.numberOfVertices(), 4);
 	EXPECT_EQ(square.edge(0).displacement(), i);
 	EXPECT_EQ(square.edge(1).displacement(), j);
 	EXPECT_EQ(square.edge(2).displacement(), -i);
 	EXPECT_EQ(square.edge(3).displacement(), -j);
+	EXPECT_EQ(square.edge(4).displacement(), i);
+	EXPECT_EQ(square.edge(5).displacement(), j);
+	EXPECT_EQ(square.edge(6).displacement(), -i);
+	EXPECT_EQ(square.edge(7).displacement(), -j);
+	EXPECT_FLOAT_EQ(square.vertex(0).x(), 0.0);
+	EXPECT_FLOAT_EQ(square.vertex(1).x(), 1.0);
+	EXPECT_FLOAT_EQ(square.vertex(2).x(), 1.0);
+	EXPECT_FLOAT_EQ(square.vertex(3).x(), 0.0);
+	EXPECT_FLOAT_EQ(square.vertex(4).x(), 0.0);
+	EXPECT_FLOAT_EQ(square.vertex(5).x(), 1.0);
+	EXPECT_FLOAT_EQ(square.vertex(6).x(), 1.0);
+	EXPECT_FLOAT_EQ(square.vertex(7).x(), 0.0);
 	EXPECT_FLOAT_EQ(square.perimeter(), 4.0);
 	EXPECT_FLOAT_EQ(square.area(), 1.0);
 	
+	// Displaced square test..
+	math::linear::StaticVector<float, 2> dis = 2.971f * i + 5.813f * j;
+	math::geometry2::SimplePolygon<float> displaced_square;
+	displaced_square.addVertex(zero + dis);
+	displaced_square.addVertex(i + dis);
+	displaced_square.addVertex(i+j + dis);
+	displaced_square.addVertex(j + dis);
+	EXPECT_EQ(displaced_square.numberOfEdges(), 4);
+	EXPECT_EQ(displaced_square.numberOfVertices(), 4);
+	EXPECT_EQ(displaced_square.edge(0).displacement(), i);
+	EXPECT_EQ(displaced_square.edge(1).displacement(), j);
+	EXPECT_EQ(displaced_square.edge(2).displacement(), -i);
+	EXPECT_EQ(displaced_square.edge(3).displacement(), -j);
+	EXPECT_FLOAT_EQ(displaced_square.perimeter(), 4.0);
+	EXPECT_FLOAT_EQ(displaced_square.area(), 1.0);
+	
+	// Rotated and displaced square test..
+	math::geometry2::SimplePolygon<float> rotated_square;
+	rotated_square.addVertex(i+dis);
+	rotated_square.addVertex(j+dis);
+	rotated_square.addVertex(-i+dis);
+	rotated_square.addVertex(-j+dis);
+	EXPECT_EQ(rotated_square.numberOfEdges(), 4);
+	EXPECT_EQ(rotated_square.numberOfVertices(), 4);
+	EXPECT_FLOAT_EQ(rotated_square.perimeter(), 4.0 * std::sqrt(2.0));
+	EXPECT_FLOAT_EQ(rotated_square.area(), 2.0);
+	
+	// Triangle test.
+	math::geometry2::SimplePolygon<float> triangle;
+	triangle.addVertex(zero);
+	triangle.addVertex(j);
+	triangle.addVertex(i);
 	EXPECT_EQ(triangle.numberOfEdges(), 3);
 	EXPECT_EQ(triangle.numberOfVertices(), 3);
 	EXPECT_FLOAT_EQ(triangle.perimeter(), 2.0 + std::sqrt(2.0));
 	EXPECT_FLOAT_EQ(triangle.area(), 0.5);
 	
+	
+	// Trapezoid test.
+	math::geometry2::SimplePolygon<float> trapezoid;
+	trapezoid.addVertex(zero);
+	trapezoid.addVertex(j);
+	trapezoid.addVertex(i+j);
+	trapezoid.addVertex(2.0f * i);
 	EXPECT_EQ(trapezoid.numberOfEdges(), 4);
 	EXPECT_EQ(trapezoid.numberOfVertices(), 4);
 	EXPECT_FLOAT_EQ(trapezoid.perimeter(), 4.0 + std::sqrt(2.0));
