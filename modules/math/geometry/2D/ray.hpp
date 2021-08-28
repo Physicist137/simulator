@@ -66,8 +66,9 @@ typename math::geometry::IntersectionData<T,2> Ray<T>::intersect(const Ray& othe
 
 template <typename T>
 typename math::geometry::IntersectionData<T,2> Ray<T>::intersect(const math::geometry2::LineSegment<T>& other) const {
-	auto data = this->intersect(other);
-	if (data.otherParameter() > 1) return math::geometry::IntersectionData<T,2>();
+	Ray<T> other_ray(other.start(), other.end() - other.start());
+	auto data = this->intersect(other_ray);
+	if (data.hasHit()  and  data.otherParameter() > 1) return math::geometry::IntersectionData<T,2>();
 	else return data;
 }
 
