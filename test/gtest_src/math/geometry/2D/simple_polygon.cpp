@@ -112,9 +112,15 @@ TEST(SimplePolygon2D, DegenerateIntersectionCases) {
 	
 	// Define a ray that passes through 3rd vertex.
 	math::geometry2::Ray<float> ray(0.5f * one, 1.5f * one);
+	auto vertex_intersection = square.intersect(ray);
+	EXPECT_TRUE(vertex_intersection.hasHit());
+	EXPECT_EQ(vertex_intersection.numberOfHits(), 1);
+	EXPECT_FLOAT_EQ(vertex_intersection.thisParameter(), 0.0);
 	
-	// Intersect.
-	auto inter = square.intersect(ray);
-	EXPECT_TRUE(inter.hasHit());
-	EXPECT_EQ(inter.numberOfHits(), 1);
+	// Define a ray that coincides with the 3rd edge.
+	math::geometry2::Ray<float> coincident(-i+j, i);
+	auto coincidence_intersection = square.intersect(ray);
+	EXPECT_TRUE(coincidence_intersection.hasHit());
+	EXPECT_EQ(coincidence_intersection.numberOfHits(), 1);
+	EXPECT_FLOAT_EQ(coincidence_intersection.thisParameter(), 0.0);
 }
