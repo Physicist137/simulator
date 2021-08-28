@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <algorithm>
 
 namespace math {
 namespace geometry {
@@ -27,6 +28,8 @@ public:
 	inline const T& s() const {return _other_parameter;}
 
 	inline const math::linear::StaticVector<T, D>& position() const {return _position;}
+	
+	inline void swap() {std::swap<T>(_this_parameter, _other_parameter);}
 };
 
 
@@ -70,6 +73,9 @@ public:
 	
 	// Clear.
 	const IntersectionData& clear();
+	
+	// Swap This and Other.
+	const IntersectionData& swap();
 };
 
 template <typename T, unsigned D>
@@ -116,6 +122,12 @@ const IntersectionData<T,D>& IntersectionData<T,D>::addIntersection(const Inters
 template <typename T, unsigned D>
 const IntersectionData<T,D>& IntersectionData<T,D>::clear() {
 	_data.clear();
+	return *this;
+}
+
+template <typename T, unsigned D>
+const IntersectionData<T,D>& IntersectionData<T,D>::swap() {
+	for (SingleIntersectionData<T,D>& single : _data) single.swap();
 	return *this;
 }
 
