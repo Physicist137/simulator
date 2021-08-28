@@ -108,13 +108,19 @@ T SimplePolygon<T>::perimeter(const std::function<T(T)>& sqrt) const {
 
 template <typename T>
 T SimplePolygon<T>::signedArea() const {
+	math::linear::StaticVector<T, 2> c = center();
 	unsigned size = _vertices.size();
 	T result = T();
 	
-	for (unsigned i = 0; i <= size; ++i) {
-		T sum = (*this)[i].x() * (*this)[i+1].y();
-		T sub = (*this)[i+1].x() * (*this)[i].y();
-		result += sum - sub;
+	for (unsigned i = 0; i < size; ++i) {
+		// Centralize the coordinates.
+		T cx = vertex(i).x() - c.x();
+		T cy = vertex(i).y() - c.y();
+		T nx = vertex(i+1).x() - c.x();
+		T ny = vertex(i+1).y() - c.y();
+		
+		// Calculate the area contribution.
+		result += cx * ny - cy * nx;
 	}
 	
 	return result / 2.0;
@@ -129,8 +135,6 @@ T SimplePolygon<T>::area() const {
 
 template <typename T>
 void SimplePolygon<T>::cleanDegenerateVertexIntersection(math::geometry::IntersectionData<T,2>& data) const {
-	
-	
 	// Verify adjacent intersections, and check if it happens at the same location.
 	std::vector<unsigned> to_erase;
 	unsigned size = data.numberOfHits();
