@@ -53,6 +53,7 @@ public:
 	// Intersection operations.
 	math::geometry::IntersectionData<T,2> intersect(const math::geometry2::RayBase<T>& ray) const;
 	bool isInside(const math::linear::StaticVector<T, 2>& point) const;
+	bool isInside(const math::geometry::IntersectionData<T,2>& data) const;
 	
 	// Add vertices.
 	const SimplePolygon& addVertex(const math::linear::StaticVector<T, 2>& vertex);
@@ -192,13 +193,19 @@ bool SimplePolygon<T>::isInside(const math::linear::StaticVector<T, 2>& point) c
 	// Directed ray connecting point in question to the center of the polygon.
 	math::geometry2::Ray<T> ray(point, diff);
 	
-	// Run intersections.
+	// Calculate intersections.
 	auto inter = this->intersect(ray);
 	
-	// Decide if inside or outside.
-	if (inter.numberOfHits() % 2) return true;
+	// Decide if inside or outside based on the intersection data.
+	return this->isInside(inter);
+}
+
+template <typename T>
+bool SimplePolygon<T>::isInside(const math::geometry::IntersectionData<T,2>& data) const {
+	if (data.numberOfHits() % 2) return true;
 	else return false;
 }
+
 
 
 
