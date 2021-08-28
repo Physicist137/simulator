@@ -68,6 +68,13 @@ public:
 		const T& other_position,
 		const math::linear::StaticVector<T, D>& position
 	) : _data({SingleIntersectionData<T,D>(this_position, other_position, position)}) {}
+	
+	explicit IntersectionData(
+		const T& this_position,
+		const T& other_position,
+		const math::linear::StaticVector<T, D>& position,
+		const IntersectionLocation& location
+	) : _data({SingleIntersectionData<T,D>(this_position, other_position, position, location)}) {}
 
 	// Verify if there's intersection.
 	inline const bool intersects() const {return not _data.empty();}

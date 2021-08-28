@@ -85,6 +85,8 @@ TEST(SimplePolygon2D, IntersectionOperations) {
 	
 	inter = square.intersect(segment);
 	EXPECT_TRUE(inter.hasHit());
+	EXPECT_EQ(inter.numberOfHits(), 1);
+	EXPECT_EQ(inter.location().vertex(), 3);
 	EXPECT_FLOAT_EQ(inter.thisParameter(), 0.5);
 	EXPECT_FLOAT_EQ(inter.otherParameter(), 0.5);
 	

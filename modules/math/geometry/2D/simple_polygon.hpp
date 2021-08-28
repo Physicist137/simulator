@@ -128,7 +128,8 @@ math::geometry::IntersectionData<T,2> SimplePolygon<T>::intersect(const math::ge
 	unsigned size = _vertices.size();
 	math::geometry::IntersectionData<T,2> data;
 	for (unsigned i = 0; i < size; ++i) {
-		auto inter = ray.intersect(edge(i));
+		math::geometry::IntersectionLocation location(i);
+		auto inter = ray.intersect(edge(i), location);
 		inter.swap();
 		if (inter.hasHit()) data.addIntersection(inter);
 	}

@@ -35,12 +35,12 @@ public:
 	inline void setTerminated(bool value) {_terminated = value;}
 	inline void setTerminationParameter(const T& value) {_termination_parameter = value;}
 	
-	math::geometry::IntersectionData<T,2> intersect(const RayBase& other) const;
+	math::geometry::IntersectionData<T,2> intersect(const RayBase& other, const math::geometry::IntersectionLocation& location = math::geometry::IntersectionLocation()) const;
 };
 
 
 template <typename T>
-typename math::geometry::IntersectionData<T,2> RayBase<T>::intersect(const RayBase& other) const {
+typename math::geometry::IntersectionData<T,2> RayBase<T>::intersect(const RayBase& other, const math::geometry::IntersectionLocation& location) const {
 	// Get differences.
 	math::linear::StaticVector<T, 2> diff = other._start - _start;
 
@@ -90,7 +90,7 @@ typename math::geometry::IntersectionData<T,2> RayBase<T>::intersect(const RayBa
 	
 	// Return intersection.
 	math::linear::StaticVector<T, 2> pos = _start + this->direction() * t;
-	return math::geometry::IntersectionData<T,2>(t, s, pos);
+	return math::geometry::IntersectionData<T,2>(t, s, pos, location);
 }
 
 
