@@ -34,6 +34,9 @@ public:
 	inline const math::linear::StaticVector<T,2>& start() const {return _start;}
 	inline math::linear::StaticVector<T,2> end() const {return _start + _spacing * math::linear::StaticVector<T,2>({static_cast<T>(_sizex), static_cast<T>(_sizey)});}
 	
+	// Some other functions.
+	const SquareGridFunction<T,E>& setValueAllSquares(const T& value);
+	
 	// Evaluation at grid points.
 	const E& dataEvaluation(unsigned i, unsigned j) const;
 	E& dataEvaluation(unsigned i, unsigned j);
@@ -79,6 +82,13 @@ E& SquareGridFunction<T,E>::dataEvaluation(unsigned i, unsigned j) {
 	return _data[datafromij(i,j)];
 }
 
+template <typename T, typename E>
+const SquareGridFunction<T,E>& SquareGridFunction<T,E>::setValueAllSquares(const T& value) {
+	unsigned size = _data.size();
+	for (unsigned k = 0; k < size; ++k) _data[k] = value;
+	return *this;
+}
+
 
 template <typename T, typename E>
 T SquareGridFunction<T,E>::linearBasisFunction(const math::linear::StaticVector<T,2>& coord) const {
@@ -118,7 +128,7 @@ E SquareGridFunction<T,E>::linearInterpolationEvaluation(const math::linear::Sta
 	if (coord.y() > end().y()) throw std::invalid_argument("Outside of domain of the function.");
 	
 	// Detect if coordinates are in the edges.
-	if (i == _sizex-1  or  j == _sizey-1) return dataEvaluation(i,j);	
+	if (i == _sizex-1  or  j == _sizey-1) return dataEvaluation(i,j);
 
 	// Interpolate.
 	// E start = dataEvaluation(i,j);
@@ -153,4 +163,50 @@ E SquareGridFunction<T,E>::evaluate(const T& x, const T& y) const {
 template <typename T, typename E>
 E SquareGridFunction<T,E>::operator()(const T& x, const T& y) const {
 	return linearInterpolationEvaluation(math::linear::StaticVector<T,2>({x, y}));
+}
+
+template <typename T, typename E>
+E SquareGridFunction<T,E>::evaluate_partial_x(const math::linear::StaticVector<T,2>& coord) const {
+	
+}
+
+template <typename T, typename E>
+E SquareGridFunction<T,E>::evaluate_partial_y(const math::linear::StaticVector<T,2>& coord) const {
+	
+}
+
+template <typename T, typename E>
+SquareGridFunction<T,E> SquareGridFunction<T,E>::partial_x() const {
+	// Define the grid new parameters.
+	unsigned newsizex = _sizex - 1;
+	unsigned newsizey = _sizey;
+	T newspacing = _spacing;
+	math::linear::StaticVector<T,2> one({static_cast<T>(1.0), static_cast<T>(1.0)});
+	math::linear::StaticVector<T,2> newstart = _start + _spacing * one;
+	
+	// Declare and initialize the grid.
+	SquareGridFunction<T,E> grid(newsizex, newsizey, newspacing, newstart);
+	
+	// Calculate left differences.
+	for (unsigned j = 0; j < newsizey; ++j) {
+		E diff = dataEvaluation(1,j) - dataEvaluation(0,j);
+		grid.dataEvaluation(0,j) = diff / newspacing;
+	}
+	
+	// Calculate right differences.
+	for (unsigned j = 0; j < newsizey; ++j) {
+		E diff = dataEvaluation(_sizex-1,j) - dataEvaluation(_sizex-2,j);
+		grid.dataEvaluation(newsizex-1,j) = diff / newspacing;
+	}
+	
+	// Calculate central differences.
+	for (unsigned i = 1; i < newsizex-1; ++i) {
+		for (unsigned j = 0; j < newsizey; ++j) {
+			E diff = dataEvaluation(i+1,j) - dataEvaluation(i-1,j);
+			grid.dataEvaluation(i,j) = diff / newspacing / 2.0;
+		}
+	}
+	
+	// Return the partial_x grid.
+	return grid;
 }
