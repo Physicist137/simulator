@@ -2,6 +2,7 @@
 #include <vector>
 #include <math/linear/static_vector.hpp>
 
+
 template <typename T, typename E=T>
 class SquareGridFunction {
 	// Domain information.
@@ -32,7 +33,7 @@ public:
 	inline unsigned sizey() const {return _sizey;}
 	inline const T& spacing() const {return _spacing;}
 	inline const math::linear::StaticVector<T,2>& start() const {return _start;}
-	inline math::linear::StaticVector<T,2> end() const {return _start + _spacing * math::linear::StaticVector<T,2>({static_cast<T>(_sizex), static_cast<T>(_sizey)});}
+	inline math::linear::StaticVector<T,2> end() const {return _start + _spacing * math::linear::StaticVector<T,2>({static_cast<T>(_sizex-1), static_cast<T>(_sizey-1)});}
 	
 	// Some other functions.
 	const SquareGridFunction<T,E>& setValueAllSquares(const T& value);
