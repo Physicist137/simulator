@@ -11,7 +11,6 @@ class FiniteElement {
 	
 	// Other data.
 	bool _frozen;
-	bool _boundary;
 
 public:
 	FiniteElement(const T& value = T(), bool frozen = false) : _value(value), _frozen(false) {}
@@ -19,7 +18,9 @@ public:
 	// Accessor functions.
 	inline const T& value() const {return _value;}
 	inline bool frozen() const {return _frozen;}
-	inline bool boundary() const {return _boundary;}
+	
+	// Settage functions.
+	FiniteElement& setFrozen(bool value);
 	
 	// FiniteElement operators.
 	FiniteElement& operator=(const FiniteElement& other);
@@ -48,6 +49,12 @@ template <typename T> FiniteElement<T> operator/(const FiniteElement<T>& a, cons
 
 
 // Definition of operator member functions.
+template <typename T>
+FiniteElement<T>& FiniteElement<T>::setFrozen(bool value) { 
+	_frozen = value;
+	return *this;
+}
+
 template <typename T>
 FiniteElement<T>& FiniteElement<T>::operator=(const FiniteElement<T>& other) {
 	this->_value = other._value;
@@ -125,20 +132,19 @@ bool operator!=(const FiniteElement<T>& a, const FiniteElement<T>& b) {
 
 template <typename T>
 FiniteElement<T> operator+(const FiniteElement<T>& a) {
-	return FiniteElement<T>(+a.value(), a.frozen(), a.boundary());
+	return FiniteElement<T>(+a.value(), a.frozen());
 }
 
 template <typename T>
 FiniteElement<T> operator-(const FiniteElement<T>& a) {
-	return FiniteElement<T>(-a.value(), a.frozen(), a.boundary());
+	return FiniteElement<T>(-a.value(), a.frozen());
 }
 
 template <typename T>
 FiniteElement<T> operator+(const FiniteElement<T>& a, const FiniteElement<T>& b) {
 	return FiniteElement<T>(
 		a.value() + b.value(),
-		a.frozen() and b.frozen(),
-		a.boundary() and b.boundary()
+		a.frozen() and b.frozen()
 	);
 }
 
@@ -146,8 +152,7 @@ template <typename T>
 FiniteElement<T> operator-(const FiniteElement<T>& a, const FiniteElement<T>& b) {
 	return FiniteElement<T>(
 		a.value() - b.value(),
-		a.frozen() and b.frozen(),
-		a.boundary() and b.boundary()
+		a.frozen() and b.frozen()
 	);
 }
 
@@ -155,8 +160,7 @@ template <typename T>
 FiniteElement<T> operator*(const FiniteElement<T>& a, const FiniteElement<T>& b) {
 	return FiniteElement<T>(
 		a.value() * b.value(),
-		a.frozen() and b.frozen(),
-		a.boundary() and b.boundary()
+		a.frozen() and b.frozen()
 	);
 }
 
@@ -164,8 +168,7 @@ template <typename T>
 FiniteElement<T> operator/(const FiniteElement<T>& a, const FiniteElement<T>& b) {
 	return FiniteElement<T>(
 		a.value() / b.value(),
-		a.frozen() and b.frozen(),
-		a.boundary() and b.boundary()
+		a.frozen() and b.frozen()
 	);
 }
 
