@@ -6,13 +6,15 @@ namespace math {
 namespace function {
 
 template <typename T, typename E=T>
-class SquareGridFunction {
+class SquareGrid {
 	// Domain information.
 	unsigned _sizex;
 	unsigned _sizey;
 	T _spacing;
 	math::linear::StaticVector<T,2> _start;
 	
+	
+protected:
 	// Image information.
 	std::vector<E> _data;
 
@@ -27,7 +29,7 @@ public:
 
 public:
 	// Constructor functions
-	SquareGridFunction(unsigned sizex, unsigned sizey, const T& spacing, math::linear::StaticVector<T,2> start = math::linear::StaticVector<T,2>())
+	SquareGrid(unsigned sizex, unsigned sizey, const T& spacing, math::linear::StaticVector<T,2> start = math::linear::StaticVector<T,2>())
 	: _sizex(sizex), _sizey(sizey), _spacing(spacing), _start(start), _data(sizex * sizey) {}
 	
 	// Accessor functions
@@ -38,7 +40,7 @@ public:
 	inline math::linear::StaticVector<T,2> end() const {return _start + _spacing * math::linear::StaticVector<T,2>({static_cast<T>(_sizex-1), static_cast<T>(_sizey-1)});}
 	
 	// Some other functions.
-	const SquareGridFunction<T,E>& setValueAllSquares(const T& value);
+	const SquareGrid<T,E>& setValueAllSquares(const T& value);
 	
 	// Evaluation at grid points.
 	const E& dataEvaluation(unsigned i, unsigned j) const;
@@ -53,22 +55,22 @@ public:
 	// Partial derivative operators.
 	E evaluate_partial_x(const math::linear::StaticVector<T,2>& coord) const;
 	E evaluate_partial_y(const math::linear::StaticVector<T,2>& coord) const;
-	SquareGridFunction<T,E> partial_x() const;
-	SquareGridFunction<T,E> partial_y() const;
+	SquareGrid<T,E> partial_x() const;
+	SquareGrid<T,E> partial_y() const;
 	
 	// Gradient operators.
 	math::linear::StaticVector<E,2> evaluate_gradient(const math::linear::StaticVector<T,2>& coord) const;
-	SquareGridFunction<T,math::linear::StaticVector<E,2>> gradient() const;
+	SquareGrid<T,math::linear::StaticVector<E,2>> gradient() const;
 };
 
 template <typename T, typename E>
-unsigned SquareGridFunction<T,E>::datafromij(unsigned i, unsigned j) const {
+unsigned SquareGrid<T,E>::datafromij(unsigned i, unsigned j) const {
 	// This assumes both i and j are aligned with xhat and yhat unit vectors.
 	return j * _sizex + i;
 }
 
 template <typename T, typename E>
-math::linear::StaticVector<T,2> SquareGridFunction<T,E>::domainfromij(unsigned i, unsigned j) const {
+math::linear::StaticVector<T,2> SquareGrid<T,E>::domainfromij(unsigned i, unsigned j) const {
 	return math::linear::StaticVector<T,2>({
 		_start.x() + static_cast<T>(i) * _spacing,
 		_start.y() + static_cast<T>(j) * _spacing
@@ -76,17 +78,17 @@ math::linear::StaticVector<T,2> SquareGridFunction<T,E>::domainfromij(unsigned i
 }
 
 template <typename T, typename E>
-const E& SquareGridFunction<T,E>::dataEvaluation(unsigned i, unsigned j) const {
+const E& SquareGrid<T,E>::dataEvaluation(unsigned i, unsigned j) const {
 	return _data[datafromij(i,j)];
 }
 
 template <typename T, typename E>
-E& SquareGridFunction<T,E>::dataEvaluation(unsigned i, unsigned j) {
+E& SquareGrid<T,E>::dataEvaluation(unsigned i, unsigned j) {
 	return _data[datafromij(i,j)];
 }
 
 template <typename T, typename E>
-const SquareGridFunction<T,E>& SquareGridFunction<T,E>::setValueAllSquares(const T& value) {
+const SquareGrid<T,E>& SquareGrid<T,E>::setValueAllSquares(const T& value) {
 	unsigned size = _data.size();
 	for (unsigned k = 0; k < size; ++k) _data[k] = value;
 	return *this;
@@ -94,7 +96,7 @@ const SquareGridFunction<T,E>& SquareGridFunction<T,E>::setValueAllSquares(const
 
 
 template <typename T, typename E>
-T SquareGridFunction<T,E>::linearBasisFunction(const math::linear::StaticVector<T,2>& coord) const {
+T SquareGrid<T,E>::linearBasisFunction(const math::linear::StaticVector<T,2>& coord) const {
 	if (coord.x() > 1.0) return T();
 	if (coord.y() > 1.0) return T();
 	if (coord.x() < -1.0) return T();
@@ -115,7 +117,7 @@ T SquareGridFunction<T,E>::linearBasisFunction(const math::linear::StaticVector<
 }
 
 template <typename T, typename E>
-E SquareGridFunction<T,E>::linearInterpolationEvaluation(const math::linear::StaticVector<T,2>& coord) const {
+E SquareGrid<T,E>::linearInterpolationEvaluation(const math::linear::StaticVector<T,2>& coord) const {
 	// Get left down corner point of the grid.
 	unsigned i = static_cast<unsigned>(std::floor((coord.x() - _start.x()) / _spacing));
 	unsigned j = static_cast<unsigned>(std::floor((coord.y() - _start.y()) / _spacing));
@@ -149,42 +151,42 @@ E SquareGridFunction<T,E>::linearInterpolationEvaluation(const math::linear::Sta
 }
 
 template <typename T, typename E>
-E SquareGridFunction<T,E>::evaluate(const math::linear::StaticVector<T,2>& coord) const {
+E SquareGrid<T,E>::evaluate(const math::linear::StaticVector<T,2>& coord) const {
 	return linearInterpolationEvaluation(coord);
 }
 
 template <typename T, typename E>
-E SquareGridFunction<T,E>::operator()(const math::linear::StaticVector<T,2>& coord) const {
+E SquareGrid<T,E>::operator()(const math::linear::StaticVector<T,2>& coord) const {
 	return linearInterpolationEvaluation(coord);
 }
 
 template <typename T, typename E>
-E SquareGridFunction<T,E>::evaluate(const T& x, const T& y) const {
+E SquareGrid<T,E>::evaluate(const T& x, const T& y) const {
 	return linearInterpolationEvaluation(math::linear::StaticVector<T,2>({x, y}));
 }
 
 template <typename T, typename E>
-E SquareGridFunction<T,E>::operator()(const T& x, const T& y) const {
+E SquareGrid<T,E>::operator()(const T& x, const T& y) const {
 	return linearInterpolationEvaluation(math::linear::StaticVector<T,2>({x, y}));
 }
 
 template <typename T, typename E>
-E SquareGridFunction<T,E>::evaluate_partial_x(const math::linear::StaticVector<T,2>& coord) const {
+E SquareGrid<T,E>::evaluate_partial_x(const math::linear::StaticVector<T,2>& coord) const {
 	
 }
 
 template <typename T, typename E>
-E SquareGridFunction<T,E>::evaluate_partial_y(const math::linear::StaticVector<T,2>& coord) const {
+E SquareGrid<T,E>::evaluate_partial_y(const math::linear::StaticVector<T,2>& coord) const {
 	
 }
 
 template <typename T, typename E>
-math::linear::StaticVector<E,2> SquareGridFunction<T,E>::evaluate_gradient(const math::linear::StaticVector<T,2>& coord) const {
+math::linear::StaticVector<E,2> SquareGrid<T,E>::evaluate_gradient(const math::linear::StaticVector<T,2>& coord) const {
 	
 }
 
 template <typename T, typename E>
-SquareGridFunction<T,E> SquareGridFunction<T,E>::partial_x() const {
+SquareGrid<T,E> SquareGrid<T,E>::partial_x() const {
 	// Define the grid new parameters.
 	unsigned newsizex = _sizex - 2;
 	unsigned newsizey = _sizey;
@@ -193,7 +195,7 @@ SquareGridFunction<T,E> SquareGridFunction<T,E>::partial_x() const {
 	math::linear::StaticVector<T,2> newstart = _start + _spacing * one;
 	
 	// Declare and initialize the grid.
-	SquareGridFunction<T,E> grid(newsizex, newsizey, newspacing, newstart);
+	SquareGrid<T,E> grid(newsizex, newsizey, newspacing, newstart);
 	
 	// Calculate central differences.
 	for (unsigned i = 1; i < _sizex-1; ++i) {
@@ -208,7 +210,7 @@ SquareGridFunction<T,E> SquareGridFunction<T,E>::partial_x() const {
 }
 
 template <typename T, typename E>
-SquareGridFunction<T,E> SquareGridFunction<T,E>::partial_y() const {
+SquareGrid<T,E> SquareGrid<T,E>::partial_y() const {
 	// Define the grid new parameters.
 	unsigned newsizex = _sizex;
 	unsigned newsizey = _sizey-2;
@@ -217,7 +219,7 @@ SquareGridFunction<T,E> SquareGridFunction<T,E>::partial_y() const {
 	math::linear::StaticVector<T,2> newstart = _start + _spacing * one;
 	
 	// Declare and initialize the grid.
-	SquareGridFunction<T,E> grid(newsizex, newsizey, newspacing, newstart);
+	SquareGrid<T,E> grid(newsizex, newsizey, newspacing, newstart);
 	
 	// Calculate central differences.
 	for (unsigned i = 0; i < _sizex; ++i) {
@@ -232,7 +234,7 @@ SquareGridFunction<T,E> SquareGridFunction<T,E>::partial_y() const {
 }
 
 template <typename T, typename E>
-SquareGridFunction<T,math::linear::StaticVector<E,2>> SquareGridFunction<T,E>::gradient() const {
+SquareGrid<T,math::linear::StaticVector<E,2>> SquareGrid<T,E>::gradient() const {
 	// Define the grid new parameters.
 	unsigned newsizex = _sizex-2;
 	unsigned newsizey = _sizey-2;
@@ -241,7 +243,7 @@ SquareGridFunction<T,math::linear::StaticVector<E,2>> SquareGridFunction<T,E>::g
 	math::linear::StaticVector<T,2> newstart = _start + _spacing * one;
 	
 	// Declare and initialize the grid.
-	SquareGridFunction<T,math::linear::StaticVector<E,2>> grid(newsizex, newsizey, newspacing, newstart);
+	SquareGrid<T,math::linear::StaticVector<E,2>> grid(newsizex, newsizey, newspacing, newstart);
 	
 	// Calculate central differences.
 	for (unsigned i = 1; i < _sizex-1; ++i) {
