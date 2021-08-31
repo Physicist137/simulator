@@ -138,10 +138,10 @@ E SquareGridFunction<T,E>::linearInterpolationEvaluation(const math::linear::Sta
 	
 	// Interpolate.
 	return
-		+ dataEvaluation(i,j) * linearBasisFunction(coord - domainfromij(i,j))
-		+ dataEvaluation(i,j+1) * linearBasisFunction(coord - domainfromij(i,j+1))
-		+ dataEvaluation(i+1,j) * linearBasisFunction(coord - domainfromij(i+1,j))
-		+ dataEvaluation(i+1,j+1) * linearBasisFunction(coord - domainfromij(i+1,j+1))
+		+ dataEvaluation(i,j) * linearBasisFunction((coord - domainfromij(i,j)) / _spacing)
+		+ dataEvaluation(i,j+1) * linearBasisFunction((coord - domainfromij(i,j+1)) / _spacing)
+		+ dataEvaluation(i+1,j) * linearBasisFunction((coord - domainfromij(i+1,j)) / _spacing)
+		+ dataEvaluation(i+1,j+1) * linearBasisFunction((coord - domainfromij(i+1,j+1)) / _spacing)
 	;
 }
 
@@ -176,37 +176,83 @@ E SquareGridFunction<T,E>::evaluate_partial_y(const math::linear::StaticVector<T
 }
 
 template <typename T, typename E>
+math::linear::StaticVector<E,2> SquareGridFunction<T,E>::evaluate_gradient(const math::linear::StaticVector<T,2>& coord) const {
+	
+}
+
+template <typename T, typename E>
 SquareGridFunction<T,E> SquareGridFunction<T,E>::partial_x() const {
 	// Define the grid new parameters.
-	unsigned newsizex = _sizex - 1;
+	unsigned newsizex = _sizex - 2;
 	unsigned newsizey = _sizey;
 	T newspacing = _spacing;
-	math::linear::StaticVector<T,2> one({static_cast<T>(1.0), static_cast<T>(1.0)});
+	math::linear::StaticVector<T,2> one({static_cast<T>(1.0), 0.0});
 	math::linear::StaticVector<T,2> newstart = _start + _spacing * one;
 	
 	// Declare and initialize the grid.
 	SquareGridFunction<T,E> grid(newsizex, newsizey, newspacing, newstart);
 	
-	// Calculate left differences.
-	for (unsigned j = 0; j < newsizey; ++j) {
-		E diff = dataEvaluation(1,j) - dataEvaluation(0,j);
-		grid.dataEvaluation(0,j) = diff / newspacing;
-	}
-	
-	// Calculate right differences.
-	for (unsigned j = 0; j < newsizey; ++j) {
-		E diff = dataEvaluation(_sizex-1,j) - dataEvaluation(_sizex-2,j);
-		grid.dataEvaluation(newsizex-1,j) = diff / newspacing;
-	}
-	
 	// Calculate central differences.
-	for (unsigned i = 1; i < newsizex-1; ++i) {
-		for (unsigned j = 0; j < newsizey; ++j) {
+	for (unsigned i = 1; i < _sizex-1; ++i) {
+		for (unsigned j = 0; j < _sizey; ++j) {
 			E diff = dataEvaluation(i+1,j) - dataEvaluation(i-1,j);
-			grid.dataEvaluation(i,j) = diff / newspacing / 2.0;
+			grid.dataEvaluation(i-1,j) = diff / newspacing / 2.0;
 		}
 	}
 	
 	// Return the partial_x grid.
+	return grid;
+}
+
+template <typename T, typename E>
+SquareGridFunction<T,E> SquareGridFunction<T,E>::partial_y() const {
+	// Define the grid new parameters.
+	unsigned newsizex = _sizex;
+	unsigned newsizey = _sizey-2;
+	T newspacing = _spacing;
+	math::linear::StaticVector<T,2> one({0.0, static_cast<T>(1.0)});
+	math::linear::StaticVector<T,2> newstart = _start + _spacing * one;
+	
+	// Declare and initialize the grid.
+	SquareGridFunction<T,E> grid(newsizex, newsizey, newspacing, newstart);
+	
+	// Calculate central differences.
+	for (unsigned i = 0; i < _sizex; ++i) {
+		for (unsigned j = 1; j < _sizey-1; ++j) {
+			E diff = dataEvaluation(i,j+1) - dataEvaluation(i,j-1);
+			grid.dataEvaluation(i,j-1) = diff / newspacing / 2.0;
+		}
+	}
+	
+	// Return the partial_y grid.
+	return grid;
+}
+
+template <typename T, typename E>
+SquareGridFunction<T,math::linear::StaticVector<E,2>> SquareGridFunction<T,E>::gradient() const {
+	// Define the grid new parameters.
+	unsigned newsizex = _sizex-2;
+	unsigned newsizey = _sizey-2;
+	T newspacing = _spacing;
+	math::linear::StaticVector<T,2> one({static_cast<T>(1.0), static_cast<T>(1.0)});
+	math::linear::StaticVector<T,2> newstart = _start + _spacing * one;
+	
+	// Declare and initialize the grid.
+	SquareGridFunction<T,math::linear::StaticVector<E,2>> grid(newsizex, newsizey, newspacing, newstart);
+	
+	// Calculate central differences.
+	for (unsigned i = 1; i < _sizex-1; ++i) {
+		for (unsigned j = 1; j < _sizey-1; ++j) {
+			E xdiff = dataEvaluation(i+1,j) - dataEvaluation(i-1,j);
+			E ydiff = dataEvaluation(i,j+1) - dataEvaluation(i,j-1);
+			
+			E xpartial = xdiff / newspacing / 2.0;
+			E ypartial = ydiff / newspacing / 2.0;
+			
+			grid.dataEvaluation(i-1,j-1) = math::linear::StaticVector<E,2>({xpartial, ypartial});
+		}
+	}
+	
+	// Return the gradient.
 	return grid;
 }
