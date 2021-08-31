@@ -2,6 +2,8 @@
 #include <vector>
 #include <math/linear/static_vector.hpp>
 
+namespace math {
+namespace function {
 
 template <typename T, typename E=T>
 class SquareGridFunction {
@@ -257,3 +259,6 @@ SquareGridFunction<T,math::linear::StaticVector<E,2>> SquareGridFunction<T,E>::g
 	// Return the gradient.
 	return grid;
 }
+
+}	// Namespace function.
+}	// Namespace math.

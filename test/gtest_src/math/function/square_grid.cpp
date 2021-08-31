@@ -6,7 +6,7 @@ TEST(SquareGridTest, ConstructorAndBasics) {
 	math::linear::StaticVector<float, 2> zero({0.0, 0.0});
 	math::linear::StaticVector<float, 2> i({1.0, 0.0});
 	math::linear::StaticVector<float, 2> j({0.0, 1.0});
-	SquareGridFunction<float, float> grid(2, 2, 1.0);
+	math::function::SquareGridFunction<float, float> grid(2, 2, 1.0);
 	
 	EXPECT_EQ(grid.sizex(), 2);
 	EXPECT_EQ(grid.sizey(), 2);
@@ -44,7 +44,7 @@ TEST(SquareGridTest, ConstructorAndBasics) {
 	
 	unsigned size = 10;
 	float spacing = 1.0 / static_cast<float>(size);
-	SquareGridFunction<float, float> larger_grid(size, size, spacing, zero);
+	math::function::SquareGridFunction<float, float> larger_grid(size, size, spacing, zero);
 	for (unsigned i = 0; i < size; ++i) {
 		for (unsigned j = 0; j < size; ++j) {
 			EXPECT_FLOAT_EQ(larger_grid.dataEvaluation(i,j), 0.0);
@@ -71,7 +71,7 @@ TEST(SquareGridTest, ConstructorAndBasics) {
 
 
 template <typename T, typename E>
-void display_grid(const SquareGridFunction<T,E>& grid) {
+void display_grid(const math::function::SquareGridFunction<T,E>& grid) {
 	std::cout << grid.domainfromij(0,0) << ", " << grid.domainfromij(1,1) << std::endl;
 	for (int j = grid.sizey()-1; j >= 0; --j) {
 		for (int i = 0; i < grid.sizex(); ++i) {
@@ -95,7 +95,7 @@ TEST(SquareGridTest, GradientTests) {
 	float step = 1 / (static_cast<float>(size-1));
 	
 	// Quadratic function.
-	SquareGridFunction<float, float> small(size, size, step);
+	math::function::SquareGridFunction<float, float> small(size, size, step);
 	for (unsigned i = 0; i < size; ++i) {
 		for (unsigned j = 0; j < size; ++j) {
 			float fi = static_cast<unsigned>(i);
